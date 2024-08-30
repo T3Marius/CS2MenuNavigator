@@ -47,5 +47,6 @@ CommandName = "menu" #command to open the menu
     OpeningMessage = "Accessing Help menu..."
 
 ```
-[Buy me a coffee :)]:(https://www.paypal.com/paypalme/my/settings?](https://paypal.me/vxaero?country.x=RO&locale.x=en_US)
+[Buy me a coffee :)]([https://www.paypal.com/donate?hosted_button_id=YOUR_BUTTON_ID](https://paypal.me/vxaero?country.x=RO&locale.x=en_US))
+
 
