@@ -1,7 +1,7 @@
 # CS2MenuManager
 This plugin is made for handling others menus and creating news one if you want. 
-![20240830040356_1](https://github.com/user-attachments/assets/fc982f47-4cca-47e4-9f64-f683dfeec1f9)
-![20240830040403_1](https://github.com/user-attachments/assets/e9e984ab-82e1-4e98-a5e3-540faa76dd3b)
+<img src="https://github.com/user-attachments/assets/fc982f47-4cca-47e4-9f64-f683dfeec1f9" alt="Image 1" width="300" />
+<img src="https://github.com/user-attachments/assets/e9e984ab-82e1-4e98-a5e3-540faa76dd3b" alt="Image 2" width="300" />
 
 
 
