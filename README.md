@@ -54,7 +54,7 @@ CommandName = "menu" #command to open the menu
 
 ```
 # Lang file (en.json)
-```
+```js
 {
   "prefix": "{red}[MenuManager] ",
   "menu.name": "˗ˏˋ ★ ˎˊ˗ [Menu] ˗ˏˋ ★ ˎˊ˗"
