@@ -1,6 +1,13 @@
 # CS2MenuManager
 This plugin is made for handling others menus and creating news one if you want. 
+![20240830040356_1](https://github.com/user-attachments/assets/fc982f47-4cca-47e4-9f64-f683dfeec1f9)
+![20240830040416_1](https://github.com/user-attachments/assets/02dab136-db55-49b4-b3ae-06fe8ab8d640)
+![20240830040403_1](https://github.com/user-attachments/assets/e9e984ab-82e1-4e98-a5e3-540faa76dd3b)
+
+
+
 # Config
+
 ```js
 CommandName = "menu" #command to open the menu
 [MenuOptions]
