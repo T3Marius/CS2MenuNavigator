@@ -1,14 +1,13 @@
-﻿using CounterStrikeSharp.API;
-using System.Reflection;
+﻿using System.Reflection;
 using Tomlyn.Model;
 using Tomlyn;
-using CounterStrikeSharp.API.Core.Translations;
+using CounterStrikeSharp.API;
 
-namespace MenuManager
+namespace MenuNavigator
 {
     public static class Config
     {
-        public static Cfg ConfigData { get; set; } = new Cfg();
+        public static MenuConfigData ConfigData { get; private set; } = new MenuConfigData();
 
         public static void Load()
         {
@@ -28,49 +27,82 @@ namespace MenuManager
             string configText = File.ReadAllText(configPath);
             TomlTable model = Toml.ToModel(configText);
 
-            string commandName = model.TryGetValue("CommandName", out var cmd) ? cmd.ToString()! : "css_menu";
-            string messageTag = model.TryGetValue("MessageTag", out var tag) ? tag.ToString()! : "[MenuManager]";
-            Config_MenuOptions menuOptions = new Config_MenuOptions();
-
-            if (model.TryGetValue("MenuOptions", out var menuOptionsSection))
+            // Load Menus
+            if (model.ContainsKey("Menus") && model["Menus"] is TomlTableArray menusArray)
             {
-                foreach (var entry in (TomlTable)menuOptionsSection)
+                foreach (TomlTable menuTable in menusArray)
                 {
-                    var optionTable = (TomlTable)entry.Value;
-                    menuOptions.Options.Add(new MenuOption
+                    var menu = new Menu
                     {
-                        Name = optionTable["Name"].ToString()!,
-                        Command = optionTable["Command"].ToString()!,
-                        OpeningMessage = optionTable.TryGetValue("OpeningMessage", out var msg)
-                ? StringExtensions.ReplaceColorTags(msg.ToString()!)
-                : "Opening {option}..."
-                    });
+                        CommandName = menuTable["CommandName"]?.ToString() ?? "unknown",
+                        MenuName = menuTable["MenuName"]?.ToString() ?? "Unnamed Menu"
+                    };
+
+                    if (menuTable.ContainsKey("MenuOptions") && menuTable["MenuOptions"] is TomlTable menuOptionsTable)
+                    {
+                        menu.MenuOptions = ParseMenuOptions(menuOptionsTable);
+                    }
+
+                    ConfigData.Menus.Add(menu);
                 }
             }
+        }
 
-            ConfigData = new Cfg
+        private static Dictionary<string, MenuOption> ParseMenuOptions(TomlTable menuOptionsTable)
+        {
+            var menuOptions = new Dictionary<string, MenuOption>();
+
+            foreach (var optionName in menuOptionsTable.Keys)
             {
-                CommandName = commandName,
-                MenuOptions = menuOptions
-            };
+                var optionTable = menuOptionsTable[optionName] as TomlTable;
+                if (optionTable == null) continue;
+
+                var menuOption = new MenuOption
+                {
+                    Name = optionTable["Name"]?.ToString() ?? "Unnamed Option",
+                    Command = optionTable["Command"]?.ToString() ?? "",
+                    OpeningMessage = optionTable["OpeningMessage"]?.ToString() ?? ""
+                };
+
+                // Check for SubOptions
+                if (optionTable.ContainsKey("SubOptions") && optionTable["SubOptions"] is TomlTableArray subOptionsArray)
+                {
+                    foreach (TomlTable subOptionTable in subOptionsArray)
+                    {
+                        var subOption = new MenuOption
+                        {
+                            Name = subOptionTable["Name"]?.ToString() ?? "Unnamed SubOption",
+                            Command = subOptionTable["Command"]?.ToString() ?? "",
+                            OpeningMessage = subOptionTable["OpeningMessage"]?.ToString() ?? ""
+                        };
+                        menuOption.SubOptions.Add(subOption);
+                    }
+                }
+
+                menuOptions.Add(optionName, menuOption);
+            }
+
+            return menuOptions;
         }
 
-        public class Cfg
+        public class MenuConfigData
         {
-            public string CommandName { get; set; } = "css_menu";
-            public Config_MenuOptions MenuOptions { get; set; } = new();
+            public List<Menu> Menus { get; set; } = new List<Menu>();
         }
 
-        public class Config_MenuOptions
+        public class Menu
         {
-            public List<MenuOption> Options { get; set; } = new();
+            public string CommandName { get; set; } = string.Empty;
+            public string MenuName { get; set; } = string.Empty;
+            public Dictionary<string, MenuOption> MenuOptions { get; set; } = new Dictionary<string, MenuOption>();
         }
 
         public class MenuOption
         {
             public string Name { get; set; } = string.Empty;
             public string Command { get; set; } = string.Empty;
-            public string OpeningMessage { get; set; } = "Opening {option}...";
+            public string OpeningMessage { get; set; } = string.Empty;
+            public List<MenuOption> SubOptions { get; set; } = new List<MenuOption>();
         }
     }
 }

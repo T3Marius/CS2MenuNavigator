@@ -1,16 +1,13 @@
-﻿using CounterStrikeSharp.API;
+﻿using CounterStrikeSharp.API.Core.Capabilities;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Attributes.Registration;
-using CounterStrikeSharp.API.Core.Capabilities;
-using CounterStrikeSharp.API.Modules.Commands;
 using WASDSharedAPI;
 
-namespace MenuManager
+namespace MenuNavigator
 {
     public class AllInOne : BasePlugin
     {
-        public override string ModuleName => "MenuManager";
-        public override string ModuleVersion => "1.0.0";
+        public override string ModuleName => "MenuNavigator";
+        public override string ModuleVersion => "1.0.1";
         public override string ModuleAuthor => "T3Marius";
 
         public static IWasdMenuManager? MenuManager;
@@ -18,39 +15,58 @@ namespace MenuManager
         public override void Load(bool hotReload)
         {
             Config.Load();
-            foreach (var command in Config.ConfigData.CommandName.Split(','))
+
+
+            foreach (var menu in Config.ConfigData.Menus)
             {
-                AddCommand($"css_{command}", "opens menu", Menu);
+                AddCommand($"css_{menu.CommandName}", $"Opens {menu.MenuName}", (player, info) => OpenMenu(player, menu));
             }
-            
         }
+
         public IWasdMenuManager? GetMenuManager()
         {
             if (MenuManager == null)
                 MenuManager = new PluginCapability<IWasdMenuManager>("wasdmenu:manager").Get();
 
-            return MenuManager; 
+            return MenuManager;
         }
 
-        public void Menu(CCSPlayerController? player, CommandInfo? info)
+        public void OpenMenu(CCSPlayerController? player, Config.Menu menu)
         {
             var manager = GetMenuManager();
             if (manager == null)
                 return;
 
-            IWasdMenu menu = manager.CreateMenu("Menu");
+            IWasdMenu wasdMenu = manager.CreateMenu(menu.MenuName);
+            AddOptionsToMenu(wasdMenu, menu.MenuOptions);
 
-            foreach (var option in Config.ConfigData.MenuOptions.Options)
+            manager.OpenMainMenu(player, wasdMenu);
+        }
+
+        private void AddOptionsToMenu(IWasdMenu menu, Dictionary<string, Config.MenuOption> options)
+        {
+            var manager = GetMenuManager();
+            if (manager == null)
+                return;
+
+            foreach (var option in options.Values)
             {
-                menu.Add(option.Name, (p, opt) =>
+                if (option.SubOptions.Any())
                 {
-                    p.ExecuteClientCommandFromServer(option.Command);
-                    p.PrintToChat($"{Localizer["prefix"]} {option.OpeningMessage.Replace("{option}", option.Name)}");
-                    manager.CloseMenu(p);
-                });
+                    IWasdMenu subMenu = manager.CreateMenu(option.Name);
+                    AddOptionsToMenu(subMenu, option.SubOptions.ToDictionary(sub => sub.Name));
+                    subMenu.Prev = menu.Add(option.Name, (p, opt) => manager.OpenSubMenu(p, subMenu));
+                }
+                else
+                {
+                    menu.Add(option.Name, (p, opt) =>
+                    {
+                        p.ExecuteClientCommandFromServer(option.Command);
+                        p.PrintToChat($"{option.OpeningMessage.Replace("{option}", option.Name)}");
+                        manager.CloseMenu(p);
+                    });
+                }
             }
-
-            manager.OpenMainMenu(player, menu);
         }
     }
 }
