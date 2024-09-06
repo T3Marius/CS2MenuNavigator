@@ -78,6 +78,24 @@ MenuName = "Main Menu"
     Command = "css_vip"
     OpeningMessage = "Accessing the VIP area..."
     #This is the VIPCore menu. and sadly we can't acces suboptions.
+
+
+[[Menus]] #YOU NEED TO USE THIS WHENEVER YOU WANT TO CREATE ANOTHER MENU.
+
+CommandName = "menu1" #Command to open the second menu !menu1
+MenuName = "Menu1" #Name of the menu
+
+[Menus.MenuOptions]
+
+    [Menus.MenuOptions.Example]
+    Name = "Example Option"
+    Command = "example_command"
+    OpeningMessage = "Executing example command..."
+
+    [[Menus.MenuOptions.Example.SubOptions]] #Example of how to use suboptions.
+    Name = "Example SubOption"
+    Command = "example_subcommand"
+    OpeningMessage = "Executing example subcommand..."
 ```
 # Lang file (en.json)
 ```js
