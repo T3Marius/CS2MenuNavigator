@@ -7,51 +7,77 @@ This plugin is made for handling others menus and creating news one if you want.
 
 # Config
 
-```js
-CommandName = "menu" #command to open the menu
-[MenuOptions]
+```
+[[Menus]]
 
-    [MenuOptions.Store]
+CommandName = "menu"
+MenuName = "Main Menu"
+
+[Menus.MenuOptions]
+
+    [Menus.MenuOptions.Store]
     Name = "Store"
+    Command = "" #If the option is a sub menu, you don't need a command.
+    OpeningMessage = "{red}Opening Store..."
+
+    [[Menus.MenuOptions.Store.SubOptions]]
+    Name = "Open Store"
     Command = "css_store"
-    OpeningMessage = "{green}Opening Store..." #message in chat when chosing option.
+    OpeningMessage = "Opening store..."
 
-    [MenuOptions.Models]
+    [[Menus.MenuOptions.Store.SubOptions]]
+    Name = "TeamBet"
+    Command = "css_bet 100"
+    OpeningMessage = "Opening TeamBets..."
+
+    [[Menus.MenuOptions.Store.SubOptions]]
+    Name = "Coinflip"
+    Command = "css_coinflip 100"
+    OpeningMessage = "Opening Coinflip..."
+
+    [[Menus.MenuOptions.Store.SubOptions]]
+    Name = "Cases"
+    Command = "css_cases"
+    OpeningMessage = "Opening cases..."
+
+    [[Menus.MenuOptions.Store.SubOptions]]
+    Name = "Trails"
+    Command = "css_trails"
+    OpeningMessage = "Opening cases..."
+    # This is where store suboptions end.
+
+
+    [Menus.MenuOptions.Models]
     Name = "Models"
-    Command = "css_models"
-    OpeningMessage = "{green}Opening  Models.." 
+    Command = ""
+    OpeningMessage = "{green}Opening Models..."
 
-    [MenuOptions.VIP]
+    [[Menus.MenuOptions.Models.SubOptions]]
+    Name = "Dutch"
+    Command = "css_model Dutch"
+    OpeningMessage = ""
+
+    [[Menus.MenuOptions.Models.SubOptions]]
+    Name = "Hitman"
+    Command = "css_model Hitman"
+    OpeningMessage = ""
+
+    [[Menus.MenuOptions.Models.SubOptions]]
+    Name = "Cortana"
+    Command = "css_model Cortana"
+    OpeningMessage = ""
+
+    [[Menus.MenuOptions.Models.SubOptions]]
+    Name = "Yuno"
+    Command = "css_model Yuno"
+    OpeningMessage = ""
+    # Same with the models one. You don't need an opening message since the plugin aleardy has one.
+
+    [Menus.MenuOptions.VIP]
     Name = "VIP"
     Command = "css_vip"
     OpeningMessage = "Accessing the VIP area..."
-
-    [MenuOptions.Cases]
-    Name = "Cases"
-    Command = "css_cases"
-    OpeningMessage = "Checking out Cases..."
-
-    [MenuOptions.Trails]
-    Name = "Trails"
-    Command = "css_trails"
-    OpeningMessage = "Setting up Trails..."
-
-    [MenuOptions.Admin]
-    Name = "Admin"
-    Command = "css_admin"
-    OpeningMessage = "Opening Admin controls..."
-
-    # Example of adding others options.
-    [MenuOptions.Settings]
-    Name = "Settings"
-    Command = "css_settings"
-    OpeningMessage = "Loading Settings..."
-
-    [MenuOptions.Help]
-    Name = "Help"
-    Command = "css_help"
-    OpeningMessage = "Accessing Help menu..."
-
+    #This is the VIPCore menu. and sadly we can't acces suboptions.
 ```
 # Lang file (en.json)
 ```js
